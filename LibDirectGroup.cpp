@@ -1,6 +1,6 @@
 #include "directgroup.h"
 
-//g++ -c -fPIC -std=c++11 main.cpp top.h overgroup.cpp smtptr.h undergroup.cpp ExternC.cpp
+//g++ -c -fPIC -std=c++11 directgroup.h staticgroup.h smtptr.h directgroup.cpp staticgroup.cpp LibDirectGroup.cpp
 // g++ -shared -Wl,-soname,libfoo.so -o libfoo.so overgroup.o undergroup.o ExternC.o
 
 extern "C"{

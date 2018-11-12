@@ -21,6 +21,7 @@ private:
         GroupT(std::string &sArg, std::string &sArg1, const size_t rel, const size_t list_size);
         //
         bool operator==(GroupT &g);
+        void Print(std::ostream &out);
     };
     std::vector<std::vector<GroupT>> main_listX; // Holds all data from process.
     std::vector<std::vector<size_t>> FamilyX; // Used to look for individual words
@@ -34,7 +35,7 @@ public:
     explicit DirectGroup(const size_t size, const size_t D);
     void TakeInText(std::string &s_main);
     void TakeInHTML(const char * sArg); // Python sends (char *)
-    void MyFamily(const char * sArg, const size_t greater_than); //Python sends (char *) no string
+    void MyFamily(const char * sArg, const size_t greater_than); //Python sends (char *)
     void Forget();
     ~DirectGroup();
 };

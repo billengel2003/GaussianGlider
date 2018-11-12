@@ -9,8 +9,8 @@ void DirectGroup::Process(std::vector<std::string> &WordsX){
     // Calculate R for each GroupT then set withn main_listX.
     std::cout<<"PROCESSING..."<<std::endl;
     const size_t size(WordsX.size());
-    for(size_t n = 0; n < size - 2; ++n){
-        for(size_t k = n + 1; ((k - n) < depth && k < size); ++k){
+    for(size_t n = 0; n < size - 1; ++n){
+        for(size_t k = n + 1; (((k - n) < depth) && (k < size)); ++k){
             GroupT g(WordsX[n], WordsX[k], (depth - (k-n)), wordlist_size);
             Set(g);
         }
@@ -19,23 +19,27 @@ void DirectGroup::Process(std::vector<std::string> &WordsX){
 void DirectGroup::Set(GroupT &group){
     // Place within main_listX two words with their corresponding relationship value.
     const size_t size(main_listX[group.hash_C].size());
-    for(size_t n = 0; n < size; ++n){
+    for(size_t n = 0; n < size; ++n){ // Through conflict pairs.
         if(main_listX[group.hash_C][n] == group){
             main_listX[group.hash_C][n].R += group.R;
             return;
         }
     }
-    main_listX[group.hash_C].push_back(group);
-    FamilyX[group.hash_0].push_back(group.hash_C);
-    FamilyX[group.hash_1].push_back(group.hash_C);
+    // If no pair matches at index add to conflict vector at index.
+      main_listX[group.hash_C].push_back(group);
+      // Add individual words to other array to look up via hash and find all relatives.
+      FamilyX[group.hash_0].push_back(group.hash_C);
+      FamilyX[group.hash_1].push_back(group.hash_C);
+
 }
-void DirectGroup::TakeInHTML(const char * url_text){
+void DirectGroup::TakeInHTML(const char * url_text){ // Python sends a char * not a string.
     // Gather usable words as are found in HTML text.
     std::vector<std::string> WordsX;
-    std::string s_main(WordUse::ToUpper(url_text)); //Use constructor to create usable string.
+    const std::string s_main(WordUse::ToUpper(url_text)); //Use constructor to create usable string.
+    const size_t size(s_main.size());
     bool inTag(false);
     std::string tag, text;
-    for(size_t n = 0; n < s_main.size(); ++n)
+    for(size_t n = 0; n < size; ++n)
     {
         if(s_main[n] == '<'){
             if(text.size() > 2){
@@ -106,28 +110,33 @@ void DirectGroup::TakeInText(std::string &s_main){
     Process(WordsX);
     Forget();
 }
+
 void DirectGroup::MyFamily(const char * c_sArg, const size_t greater_than){
     std::string sArg(WordUse::ToUpper(c_sArg));
 
-    // Gather hash index values in FamilyX.
+    // Gather hash index values in FamilyX for particular sArg.
     // Look at each hash index within main_listX through conflict pairs for matching strings.
+
     const size_t hash_index(Hash::HashMe(sArg, wordlist_size));
+    std::cout<<std::endl<<"HASH INDEX FOR: "<<sArg<<" : " <<hash_index<<std::endl;
     const size_t size_f(FamilyX[hash_index].size());
-    for(size_t m = 0; m < size_f; ++m){
+    std::cout<<std::endl<<"Size of FamilyX at "<<hash_index<<" is "<<size_f<<std::endl<<std::endl;
+    for(size_t m = 0; m < size_f; ++m){ // These should be short loops though conflict pairs; most are probably size == 1.
         for(size_t k = 0; k < main_listX[FamilyX[hash_index][m]].size(); ++k){
-            if(main_listX[FamilyX[hash_index][m]][k].Ks == sArg &&
+             if(main_listX[FamilyX[hash_index][m]][k].Ks == sArg &&
                     main_listX[FamilyX[hash_index][m]][k].R > greater_than){
 
-                std::cout<<main_listX[FamilyX[hash_index][m]][k].Ws<<'\t'<<main_listX[FamilyX[hash_index][m]][k].R<<'\t'<<std::endl;
+               std::cout<<main_listX[FamilyX[hash_index][m]][k].Ws<<'\t'<<main_listX[FamilyX[hash_index][m]][k].R<<'\t'<<std::endl;
 
             } else if(main_listX[FamilyX[hash_index][m]][k].Ws == sArg &&
                       main_listX[FamilyX[hash_index][m]][k].R > greater_than) {
 
-                std::cout<<main_listX[FamilyX[hash_index][m]][k].Ks<<'\t'<<main_listX[FamilyX[hash_index][m]][k].R<<'\t'<<std::endl;
+               std::cout<<main_listX[FamilyX[hash_index][m]][k].Ks<<'\t'<<main_listX[FamilyX[hash_index][m]][k].R<<'\t'<<std::endl;
             }
         }
     }
     /*
+    //n^2 look up function without hash work.
     const size_t size(main_listX.size());
     for(size_t n = 0; n < size; ++n){
         for(size_t m = 0; m < main_listX[n].size(); ++m){
@@ -139,11 +148,14 @@ void DirectGroup::MyFamily(const char * c_sArg, const size_t greater_than){
         }
     }
     */
+
 }
 
 void DirectGroup::Forget(){
     // Start reducing R in GroupT each call.
     // If R is already == 1 erase GroupT from main_listX
+    // Since main_listX size is constant and conflicts should be rare this is closer to C time than n^2
+    // as long as the starting wordlist_size is sufficiently large enough.
     std::cout<<"FORGETTING..."<<std::endl;
     const size_t size(main_listX.size());
     for(size_t n = 0; n < size; ++n){
@@ -158,5 +170,7 @@ void DirectGroup::Forget(){
 }
 
 DirectGroup::~DirectGroup(){
+    // When interfacing with Python its nice to know the destructor got called.
+    // Can be removed.
     std::cout<<"DESTROYED"<<std::endl;
 }

@@ -6,6 +6,7 @@ class Hash
 {
 public:
     static size_t HashMe(std::string &sArg, const size_t list_size);
+    static size_t Con_HashMe(std::string &sArg, std::string &sArg1, const size_t list_size);
 };
 
 class WordUse

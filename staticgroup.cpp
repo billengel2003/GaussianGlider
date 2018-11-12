@@ -1,12 +1,23 @@
 #include "staticgroup.h"
 
 size_t Hash::HashMe(std::string &sArg, const size_t list_size){
-    return (std::hash<std::string>{}(sArg)) % list_size; // C++11
+    return ((std::hash<std::string>{}(sArg)) % list_size); // C++11
+}
+size_t Hash::Con_HashMe(std::string &sArg, std::string &sArg1, const size_t list_size){
+    std::string Cs;
+    if(sArg > sArg1){
+        Cs = sArg + sArg1;
+        return HashMe(Cs, list_size);
+    } else if(sArg <= sArg1){
+        Cs = sArg1 + sArg;
+        return HashMe(Cs, list_size);
+    }
+    return 0;
 }
 std::string WordUse::ToUpper(std::string &sArg){
         const size_t size(sArg.size());
         for(size_t n = 0; n < size; ++n){
-            if(sArg[n] < 123 && sArg[n] > 96){
+            if(sArg[n] > 96 && sArg[n] < 123){
                 sArg[n] = sArg[n] - 32;
             }
         }
@@ -16,14 +27,14 @@ std::string WordUse::ToUpper(const char * sArg_c){
     std::string sArg(sArg_c);
     const size_t size(sArg.size());
     for(size_t n = 0; n < size; ++n){
-        if(sArg[n] < 123 && sArg[n] > 96){
+        if(sArg[n] > 96 && sArg[n] < 123){
             sArg[n] = sArg[n] - 32;
         }
     }
     return sArg;
 }
 bool WordUse::Good(std::string &sArg){
-    std::string arry[50];
+    std::string arry[56];
     arry[0] = "WHO";
     arry[1] = "THE";
     arry[2] = "IT";
@@ -74,12 +85,19 @@ bool WordUse::Good(std::string &sArg){
     arry[47] = "BEEN";
     arry[48] = "WHEREFORE";
     arry[49] = "SHALL";
+    arry[50] = "NOT";
+    arry[51] = "HATH";
+    arry[52] = "THOU";
+    arry[53] = "YE";
+    arry[54] = "THEE";
+    arry[55] = "THEREFORE";
 
 
-    for(size_t n = 0; n < 50; ++n){
+    for(size_t n = 0; n < 55; ++n){
         if(arry[n] == sArg){
             return false;
         }
     }
     return true;
 }
+

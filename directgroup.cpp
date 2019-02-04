@@ -8,9 +8,10 @@ DirectGroup::DirectGroup(const size_t size, const size_t D): wordlist_size(size)
 void DirectGroup::Process(std::vector<std::string> &WordsX){
     // Calculate R for each GroupT then set withn main_listX.
     std::cout<<"PROCESSING..."<<std::endl;
-    const size_t size(WordsX.size());
-    for(size_t n = 0; n < size - 1; ++n){
-        for(size_t k = n + 1; (((k - n) < depth) && (k < size)); ++k){
+    const size_t size(WordsX.size() - 1);
+    const size_t size_k(size + 1); 
+    for(size_t n = 0; n < size; ++n){
+        for(size_t k = n + 1; (((k - n) < depth) && (k < size_k)); ++k){
             GroupT g(WordsX[n], WordsX[k], (depth - (k-n)), wordlist_size);
             Set(g);
         }
@@ -28,8 +29,8 @@ void DirectGroup::Set(GroupT &group){
     // If no pair matches at index add to conflict vector at index.
       main_listX[group.hash_C].push_back(group);
       // Add individual words to other array to look up via hash and find all relatives.
-      FamilyX[group.hash_0].push_back(group.hash_C);
-      FamilyX[group.hash_1].push_back(group.hash_C);
+     // FamilyX[group.hash_0].push_back(group.hash_C);
+     // FamilyX[group.hash_1].push_back(group.hash_C);
 
 }
 void DirectGroup::TakeInHTML(const char * url_text){ // Python sends a char * not a string.
@@ -117,6 +118,7 @@ void DirectGroup::MyFamily(const char * c_sArg, const size_t greater_than){
     // Gather hash index values in FamilyX for particular sArg.
     // Look at each hash index within main_listX through conflict pairs for matching strings.
 
+	/*
     const size_t hash_index(Hash::HashMe(sArg, wordlist_size));
     std::cout<<std::endl<<"HASH INDEX FOR: "<<sArg<<" : " <<hash_index<<std::endl;
     const size_t size_f(FamilyX[hash_index].size());
@@ -135,7 +137,7 @@ void DirectGroup::MyFamily(const char * c_sArg, const size_t greater_than){
             }
         }
     }
-    /*
+	*/
     //n^2 look up function without hash work.
     const size_t size(main_listX.size());
     for(size_t n = 0; n < size; ++n){
@@ -147,8 +149,6 @@ void DirectGroup::MyFamily(const char * c_sArg, const size_t greater_than){
             }
         }
     }
-    */
-
 }
 
 void DirectGroup::Forget(){

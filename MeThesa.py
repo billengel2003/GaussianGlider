@@ -1,6 +1,7 @@
 import mechanize
 import re
 import random
+import string
 
 from ctypes import cdll
 
@@ -39,7 +40,7 @@ with open('./Dictionary_New.txt') as fm:
 for x in range(int(runs)):
 	try:
 		print(x)
-		url_in = wiki+l_words[random.randint(1, len(l_words))]
+		url_in = wiki+string.capwords(l_words[random.randint(1, len(l_words))])
 		print("\n\nLooking into " + url_in)
 		words = page_source(url_in)
 		T.TakeIn(words)

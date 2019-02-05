@@ -24,7 +24,7 @@ private:
         void Print(std::ostream &out);
     };
     std::vector<std::vector<GroupT>> main_listX; // Holds all data from process.
-    std::vector<std::vector<size_t>> FamilyX; // Used to look for individual words
+    //std::vector<std::vector<size_t>> FamilyX; // Used to look for individual words
     const size_t wordlist_size;
     const size_t depth;
     //
@@ -36,6 +36,7 @@ public:
     void TakeInText(std::string &s_main);
     void TakeInHTML(const char * sArg); // Python sends (char *)
     void MyFamily(const char * sArg, const size_t greater_than); //Python sends (char *)
+    size_t OurR(const char * sArg, const char * sArg1); 
     void Forget();
     ~DirectGroup();
 };

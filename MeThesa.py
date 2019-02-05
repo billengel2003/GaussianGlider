@@ -25,6 +25,8 @@ class MeThesa:
 		lib.MyFamily(self.obj, word, int(greater_than))
 	def Forget(self):
 		lib.Forget(self.obj)
+	def OurR(self):
+		lib.MyR(self.obj, word, word1)
 	def End(self):
 		lib.End(self.obj)
 
@@ -42,8 +44,7 @@ for x in range(int(runs)):
 		print(x)
 		url_in = wiki+string.capwords(l_words[random.randint(1, len(l_words))])
 		print("\n\nLooking into " + url_in)
-		words = page_source(url_in)
-		T.TakeIn(words)
+		T.TakeIn(page_source(url_in))
 	except ValueError:
 		print("VALUE ERROR")
 	except:
@@ -55,6 +56,12 @@ try:
 			break
 		greater_than = raw_input("FOR RELATIONSHIPS GREATER THAN: ")
 		T.MyFamily(look, greater_than)
+	while(1 == 1):
+		word = raw_input("Enter First Word: ")
+		word1 = raw_input("Enter Second Word: ")
+		if(w == "XXX"):
+			break
+		OurR(word, word1)
 except ValueError:
 	print("VALUE ERROR")
 except:

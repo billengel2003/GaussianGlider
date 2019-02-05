@@ -3,7 +3,7 @@
 DirectGroup::DirectGroup(const size_t size, const size_t D): wordlist_size(size), depth(D){
     // Set up vectors so that they don't have to resize through program.
     main_listX.resize(wordlist_size);
-    FamilyX.resize(wordlist_size);
+    //FamilyX.resize(wordlist_size);
 }
 void DirectGroup::Process(std::vector<std::string> &WordsX){
     // Calculate R for each GroupT then set withn main_listX.
@@ -149,6 +149,19 @@ void DirectGroup::MyFamily(const char * c_sArg, const size_t greater_than){
             }
         }
     }
+}
+
+size_t DirectGroup::OurR(const char * sArg, const char *sArg1){
+    std::string w(WordUse::ToUpper(sArg)); 
+    std::string w1(WordUse::ToUpper(sArg1)); 
+    GroupT group(w, w1, 0, wordlist_size); 
+    const size_t size(main_listX[group.hash_C].size());
+    for(size_t n = 0; n < size; ++n){ // Through conflict pairs.
+        if(main_listX[group.hash_C][n] == group){
+		return main_listX[group.hash_C][n].R;
+        }
+    }
+    return 0;
 }
 
 void DirectGroup::Forget(){

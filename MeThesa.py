@@ -2,6 +2,7 @@ import mechanize
 import re
 import random
 import string
+import sys
 
 from ctypes import cdll
 
@@ -25,8 +26,8 @@ class MeThesa:
 		lib.MyFamily(self.obj, word, int(greater_than))
 	def Forget(self):
 		lib.Forget(self.obj)
-	def OurR(self):
-		lib.MyR(self.obj, word, word1)
+	def Translate(self, text):
+		lib.Translate(self.obj, text)
 	def End(self):
 		lib.End(self.obj)
 
@@ -58,14 +59,15 @@ try:
 		T.MyFamily(look, greater_than)
 	while(1 == 1):
 		word = raw_input("Enter First Word: ")
-		word1 = raw_input("Enter Second Word: ")
-		if(w == "XXX"):
+		if(word == "XXX"):
 			break
-		OurR(word, word1)
+		word1 = raw_input("Enter Second Word: ")
+		T.OurR(word, word1)
 except ValueError:
 	print("VALUE ERROR")
 except:
 	print("NO GOOD")
+	print(sys.exc_info()[0])
 T.End()
 
 

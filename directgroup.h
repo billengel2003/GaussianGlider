@@ -31,12 +31,16 @@ private:
     DirectGroup(const DirectGroup & right); // Don't allow copies
     void Process(std::vector<std::string> &WordsX);
     void Set(GroupT &group); //Place groupT into main_listX
+    size_t OurR(const char * sArg, const char * sArg1); 
+    std::vector<std::string> GatherWordsText(const char * text); 
+    std::vector<std::string> GatherWordsHTML(const char * text);
+    std::vector<GroupT> TheFamily(std::string &sArg);  
 public:
     explicit DirectGroup(const size_t size, const size_t D);
     void TakeInText(std::string &s_main);
     void TakeInHTML(const char * sArg); // Python sends (char *)
     void MyFamily(const char * sArg, const size_t greater_than); //Python sends (char *)
-    size_t OurR(const char * sArg, const char * sArg1); 
+    void Translate(const * text);
     void Forget();
     ~DirectGroup();
 };

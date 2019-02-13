@@ -33,8 +33,38 @@ void DirectGroup::Set(GroupT &group){
      // FamilyX[group.hash_1].push_back(group.hash_C);
 
 }
-void DirectGroup::TakeInHTML(const char * url_text){ // Python sends a char * not a string.
-    // Gather usable words as are found in HTML text.
+std::vector<std::string> DirectGroup::GatherWordsText(const char * text){
+    const size_t size(s_main.size());
+    WordUse::ToUpper(s_main);
+    std::string word;
+    std::vector<std::string> WordsX;
+    for(size_t n = 0; n < size; ++n){
+        if(s_main[n] > 64 && s_main[n] < 91){
+            // If ascii values within capital letters keep for word
+            word += s_main[n];
+            if(n == size - 1){
+                if(WordUse::Good(word)){
+                    WordsX.push_back(word);
+                }
+                word.clear();
+            }
+        }
+        else if(word.size() > 1){
+            // Only take words with multiple letters and which are not too common
+            if(WordUse::Good(word)){
+                WordsX.push_back(word);
+            }
+            word.clear();
+        }
+        else{
+            word.clear();
+        }
+        // Don't clear here; needs to propogate.
+    }
+    return WordsX; 
+}
+
+std::vector<std::string> DirectGroup::GatherWordsHTML(const char * text){
     std::vector<std::string> WordsX;
     const std::string s_main(WordUse::ToUpper(url_text)); //Use constructor to create usable string.
     const size_t size(s_main.size());
@@ -77,38 +107,17 @@ void DirectGroup::TakeInHTML(const char * url_text){ // Python sends a char * no
             }
         }
     }
-    Process(WordsX);
+    return WordsX; 
+}
+
+void DirectGroup::TakeInHTML(const char * url_text){ // Python sends a char * not a string.
+    // Gather usable words as are found in HTML text.
+    
+    Process(GatherWordsHTML(url_text));
     Forget();
 }
 void DirectGroup::TakeInText(std::string &s_main){
-    const size_t size(s_main.size());
-    WordUse::ToUpper(s_main);
-    std::string word;
-    std::vector<std::string> WordsX;
-    for(size_t n = 0; n < size; ++n){
-        if(s_main[n] > 64 && s_main[n] < 91){
-            // If ascii values within capital letters keep for word
-            word += s_main[n];
-            if(n == size - 1){
-                if(WordUse::Good(word)){
-                    WordsX.push_back(word);
-                }
-                word.clear();
-            }
-        }
-        else if(word.size() > 1){
-            // Only take words with multiple letters and which are not too common
-            if(WordUse::Good(word)){
-                WordsX.push_back(word);
-            }
-            word.clear();
-        }
-        else{
-            word.clear();
-        }
-        // Don't clear here; needs to propogate.
-    }
-    Process(WordsX);
+    Process(GatherWordsText(s_main));
     Forget();
 }
 
@@ -161,7 +170,37 @@ size_t DirectGroup::OurR(const char * sArg, const char *sArg1){
 		return main_listX[group.hash_C][n].R;
         }
     }
-    return 0;
+}
+
+void DirectGroup::Translate(const char * text){
+	const std::vector<std::string> vX(GatherWordsText(text)); 
+	const size_t size(vX.size()); 
+	std::vector<GroupT> the_familyX; 
+	size_t place_holder(0); 
+	GroupT largest_group; 
+	for(size_t n = 0; n < size - 1; ++n){
+		GroupT g(vX[n], vX[n + 1], 0, wordlist_size); 
+		the_familyX = TheFamily(vX[n]);
+		for(size_t m = 0; m < the_familyX.size(); ++m){
+			if(the_familyX[m].R > place_holder){
+				place_holder = the_familyX[m].R; 
+				largest_group = the_familyX[m]; 
+			}		
+		}
+	}
+	
+}
+std::vector<GroupT> DirectGroup::TheFamily(std::string &sArg){ 
+    std::vector<GroupT> vX; 
+    const size_t size(main_listX.size());
+    for(size_t n = 0; n < size; ++n){
+        for(size_t m = 0; m < main_listX[n].size(); ++m){
+            if(main_listX[n][m].Ks == sArg || main_listC[n][m].Ws == sArg){
+	    	vX.push_back(main_listX[n][m]; 
+	    }
+        }
+    }
+    return vX; 
 }
 
 void DirectGroup::Forget(){

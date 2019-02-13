@@ -14,8 +14,8 @@ extern "C"{
 	void MyFamily(DirectGroup * dg, const char * child, const int greater_than){
 		dg->MyFamily(child, greater_than);
 	}
-	void MyR(DirectGroup * dg, const char * sArg, const char * sArg1){
-		std::cout<<sArg<<'\t'<<dg->OurR(sArg, sArg)<<'\t'<<sArg1<<std::endl; 
+	void Translate(DirectGroup * dg, const char * text){
+		dg->Translate(text); 	
 	}
 	void End(DirectGroup * dg){
 		delete dg;
